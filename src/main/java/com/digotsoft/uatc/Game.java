@@ -1,48 +1,74 @@
 package com.digotsoft.uatc;
 
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import com.digotsoft.uatc.scenes.LoadingScene;
+import com.digotsoft.uatc.scenes.Renderable;
+import com.digotsoft.uatc.util.Converters;
+import org.lwjgl.opengl.Display;
+import org.newdawn.slick.*;
+
+import java.lang.reflect.Constructor;
 
 /**
  * A game using Slick2d
  */
 public class Game extends BasicGame {
 
-    /** Screen width */
-    private static final int WIDTH = 800;
-    /** Screen height */
-    private static final int HEIGHT = 600;
+    private static final int WIDTH = 1280;
+    private static final int HEIGHT = 720;
     
-    /** A counter... */
-    private int counter;
+    private Renderable active;
 
     public Game() {
-        super("A Slick2d game");
+        super("Ultimate ATC Simulator");
+    }
+    
+    public void switchScene(Class<? extends Renderable> sceneClass) {
+        try {
+            Constructor<? extends Renderable> constructor = sceneClass.getConstructor( Game.class );
+            this.active = constructor.newInstance(this);
+            this.active.loaded();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
     public void render(GameContainer container, Graphics g) throws SlickException {
-        g.drawString("Hello, " + Integer.toString(counter) + "!", 50, 50);
-
+        if( this.active != null ) {
+            this.active.render( container, g );
+        }
     }
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        counter = 0;
+        this.switchScene( LoadingScene.class );
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
-        counter++;
+        if( this.active != null ) {
+            this.active.update( container, delta );
+        }
     }
     
-    public static void main(String[] args) throws SlickException {
+    @Override
+    public void mouseWheelMoved( int change ) {
+        if( this.active != null ) {
+            this.active.mouseWheelMoved( change );
+        }
+    }
+    
+    
+    
+    public static void main( String[] args) throws SlickException {
+        Display.setResizable(true);
         AppGameContainer app = new AppGameContainer(new Game());
         app.setDisplayMode(WIDTH, HEIGHT, false);
         app.setForceExit(false);
+        app.setUpdateOnlyWhenVisible( false );
         app.start();
+        
+     
+       
     }
 
 }

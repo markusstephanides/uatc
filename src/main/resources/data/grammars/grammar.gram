@@ -1,0 +1,64 @@
+#JSGF V1.0;
+
+  /**
+  * JSGF Grammar
+  */
+
+grammar grammar;
+
+
+<airline> = ( austrian | lufthansa | german wings );
+<callsign> = ( <airline> <number> <number> <number>);
+<locPos> = ( left | center | right );
+<action> = ( cleared to land | hold position | report heading );
+<argAction> = ( taxi to | line up and wait );
+<runway> = runway <number> <number> <locPos>;
+
+public <simpleSyntax> = <callsign> <action>;
+public <actRwySyntax> = <callsign> <argAction>{1} ( <runway>{1} );
+public <clearance> = <callsign> cleared to your destination out of <runway> squawk <number> <number> <number> <number>;
+
+
+// numbers
+<zero> = ( zero );
+<one> = ( one | wan | won );
+<two> = ( two | too );
+<three> = ( three | tree );
+<four> = ( four | fore );
+<five> = ( five );
+<six> = ( six );
+<seven> = ( seven );
+<eight> = ( eight );
+<nine> = ( niner | nine );
+
+public <number> = ( <zero> | <one> | <two> | <three> | <four> | <five> | <six> | <seven> | <nine> );
+
+// letters
+<a> = ( alpha );
+<b> = ( bravo );
+<c> = ( charlie );
+<d> = ( delta );
+<e> = ( echo | eco );
+<f> = ( fox | foxtrott );
+<g> = ( golf );
+<h> = ( hotel );
+<i> = ( india );
+<j> = ( juliet );
+<k> = ( kilo );
+<l> = ( lima );
+<m> = ( mike | mic );
+<n> = ( november );
+<o> = ( oscar );
+<p> = ( papa );
+<q> = ( quebec | bec | que );
+<r> = ( romeo );
+<s> = ( sierra );
+<t> = ( tango );
+<u> = ( uniform );
+<v> = ( victor );
+<w> = ( whiskey );
+<x> = ( x-ray | x | ray );
+<y> = ( yankee );
+<z> = ( zulu );
+
+public <letter> = ( <a> | <b> | <c> | <d> | <e> | <f> | <g> | <h> | <i> | <j> | <k> | <l> | <m> | <n> | <o> | <p> | <q> | <r> | <s> | <t> | <u> | <v> | <w> | <x> | <y> | <z> );
