@@ -28,5 +28,9 @@ public abstract class Renderable {
     public abstract void render( GameContainer container, Graphics g ) throws SlickException;
     
     public abstract void update( GameContainer container, int delta ) throws SlickException;
-    
+
+    public void keyPressed(int key, char c) {
+
+    }
+
 }

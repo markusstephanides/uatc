@@ -1,8 +1,10 @@
 package com.digotsoft.uatc.scenes;
 
 import com.digotsoft.uatc.*;
+import com.digotsoft.uatc.Game;
 import com.digotsoft.uatc.aviation.Sector;
 import com.digotsoft.uatc.speech.SpeechReco;
+import org.lwjgl.LWJGLUtil;
 import org.newdawn.slick.*;
 
 /**
@@ -18,20 +20,19 @@ public class LoadingScene extends Renderable {
     }
     
     public void loaded() {
-        System.out.println( "hi" );
         this.font = new TrueTypeFont( new java.awt.Font( "Arial", java.awt.Font.BOLD, 20 ), true );
         this.loadGameStuff();
     }
     
     private void loadGameStuff() {
-     
+     new Thread(() -> {
             // init the speech reco
-            SpeechReco.init();
+            //SpeechReco.init();
             // load sectors
             Sector.loadSectors();
             // done - switch to main menu //TODO
-            this.game.switchScene( GameScene.class );
-       // }).start();
+            Game.run( () -> this.game.switchScene( GameScene.class ));
+       }).start();
     }
     
     public void render( GameContainer container, Graphics g ) throws SlickException {

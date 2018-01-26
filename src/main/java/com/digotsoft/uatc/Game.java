@@ -7,6 +7,10 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.*;
 
 import java.lang.reflect.Constructor;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A game using Slick2d
@@ -15,6 +19,9 @@ public class Game extends BasicGame {
 
     private static final int WIDTH = 1280;
     private static final int HEIGHT = 720;
+
+
+    public static final Queue<Runnable> queue = new LinkedBlockingQueue<>();
     
     private Renderable active;
 
@@ -48,16 +55,29 @@ public class Game extends BasicGame {
         if( this.active != null ) {
             this.active.update( container, delta );
         }
+
+        while( queue.size() > 0) {
+            queue.poll().run();
+        }
     }
-    
+
+    @Override
+    public void keyPressed(int key, char c) {
+        if( this.active != null ) {
+            this.active.keyPressed( key, c );
+        }
+    }
+
     @Override
     public void mouseWheelMoved( int change ) {
         if( this.active != null ) {
             this.active.mouseWheelMoved( change );
         }
     }
-    
-    
+
+    public static void run(Runnable runnable) {
+        queue.add(runnable);
+    }
     
     public static void main( String[] args) throws SlickException {
         Display.setResizable(true);
@@ -66,9 +86,6 @@ public class Game extends BasicGame {
         app.setForceExit(false);
         app.setUpdateOnlyWhenVisible( false );
         app.start();
-        
-     
-       
     }
 
 }

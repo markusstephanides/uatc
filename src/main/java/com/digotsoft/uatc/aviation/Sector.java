@@ -101,8 +101,8 @@ public class Sector {
     
     private void parseFixes( String[] block, String fixType ) {
         for ( String s : block ) {
-            s = s.replace( "  ", " " ).replace( "   ", " " ).replace( ";", "" );
-            if ( s.equals( "  " ) ) continue;
+            s = s.replace( "   ", " " ).replace( "  ", " " ).replace( ";", "" );
+            if ( s.equals( " " ) ||  s.equals( "  "  )) continue;
             
             String[] rawFix = s.split( " " );
             try {
