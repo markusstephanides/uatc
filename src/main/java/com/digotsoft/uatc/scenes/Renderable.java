@@ -32,5 +32,13 @@ public abstract class Renderable {
     public void keyPressed(int key, char c) {
 
     }
+    
+    public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
+    
+    }
+    
+    public boolean isInRenderArea( GameContainer container, float x, float y) {
+        return x > 0 && y > 0 && x <= container.getWidth() && y <= container.getHeight();
+    }
 
 }

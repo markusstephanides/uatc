@@ -68,4 +68,9 @@ public class GameScene extends Renderable {
     public void mouseWheelMoved( int change ) {
         this.radar.mouseWheelMoved( change );
     }
+    
+    @Override
+    public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
+        this.radar.mouseDragged( oldx, oldy, newx, newy );
+    }
 }

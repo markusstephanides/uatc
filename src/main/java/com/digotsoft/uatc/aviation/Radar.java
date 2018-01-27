@@ -5,8 +5,14 @@ import com.digotsoft.uatc.Game;
 import com.digotsoft.uatc.scenes.Renderable;
 import lombok.Getter;
 import lombok.Setter;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
+import org.newdawn.slick.Graphics;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,21 +35,31 @@ public class Radar extends Renderable {
     private boolean displayNdbs = true;
     @Getter @Setter
     private boolean displayFixs = true;
+    @Getter @Setter
+    private boolean displayLabels = true;
+    
+    private List<Renderable> objectsToRender;
 
     private Font radarFont;
+    private Color background;
 
     private GameContainer container;
     
     public Radar() {
         super( null );
+        this.objectsToRender = new ArrayList<>();
+        this.background = new Color( 0,0,10 );
         this.activeSector = Sector.getSector( "LOVV_CTR" );
-        this.radarFont = new TrueTypeFont(new java.awt.Font("Arial", 0, 8), true);
+        this.radarFont = new TrueTypeFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 9), true);
         this.cameraX = this.activeSector.getInitCamX();
         this.cameraY = this.activeSector.getInitCamY();
+        GL11.glClearColor(0,0,0.06f,1);
     }
     
     @Override
     public void render( GameContainer container, Graphics g ) throws SlickException {
+        g.setColor( this.background );
+       
         for ( Fix fix : this.activeSector.getFixes() ) {
             switch(fix.getType()) {
                 case VOR:
@@ -57,11 +73,22 @@ public class Radar extends Renderable {
                 case FIX:
                     if(!this.displayFixs) continue;
                     g.setColor(Color.green);
+                case LABEL:
+                    if(!this.displayLabels) continue;
+                    g.setColor(Color.white);
                     break;
             }
-
-            this.radarFont.drawString( (float ) (( fix.getX() - this.cameraX ) * this.zoom), ( float ) ((( fix.getY() - this.cameraY ) * this.zoom) + 5), fix.getName() );
-            g.fillOval( (float)(( fix.getX() - this.cameraX ) * this.zoom), ( float ) (( fix.getY() - this.cameraY ) * this.zoom), 3,3 );
+            
+            int x = Math.toIntExact( Math.round( ( ( fix.getX() - this.cameraX ) * this.zoom ) ) );
+            int y = Math.toIntExact( Math.round( ( ( fix.getY() - this.cameraY ) * this.zoom ) ) );
+            
+            if(!this.isInRenderArea( container, x, y )){
+                System.out.println(x + "-" + y);
+                continue;
+            }
+            
+            this.radarFont.drawString( x + 5, y - 10, fix.getName() );
+            g.fillOval( x, y, 3,3 );
         }
     
         for ( Path path: this.activeSector.getPaths() ) {
@@ -79,6 +106,12 @@ public class Radar extends Renderable {
         if ( container.getInput().isKeyDown( Input.KEY_DOWN ) ) this.cameraY += this.moveSpeed * delta;
         
         this.container = container;
+        
+        
+    }
+    
+    private void recalculateObjectsToDisplay() {
+    
     }
     
     @Override
@@ -88,5 +121,11 @@ public class Radar extends Renderable {
         this.cameraX += (this.container.getWidth() / zoomBefore - this.container.getWidth() / this.zoom) / 2;
         this.cameraY += (this.container.getHeight() / zoomBefore - this.container.getHeight() / this.zoom) / 2;
         this.moveSpeed = 0.5 / this.zoom;
+    }
+    
+    @Override
+    public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
+        this.cameraX += (oldx-newx) / this.zoom;
+        this.cameraY += (oldy-newy) / this.zoom;
     }
 }

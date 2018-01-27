@@ -27,7 +27,7 @@ public class Converters {
     
             int degrees = 0;
             int minutes = 0;
-            double seconds = 0; // E012.30.44.279
+            double seconds = 0;
             
             if(valSplit.length >= 2){
                 degrees = Integer.parseInt( valSplit[ 0 ] );
@@ -44,7 +44,6 @@ public class Converters {
     
             double decimal = ( ( minutes * 60.0 ) + seconds ) / ( 60.0 * 60.0 );
             decimal += degrees;
-    
            
             if(longitude) {
                 decimal = decimal * Math.PI / 180;

@@ -69,10 +69,13 @@ public class Sector {
         // FIXs
         String[] fixesBlock = parts[ 4 ].split( "\n" );
         parseFixes( fixesBlock, "FIX" );
-        
         // GEO
         String[] geoBlock = parts[ 14 ].split( "\n" );
         parsePaths( geoBlock );
+        // FIXs
+        String[] labelsBlock = parts[ 5 ].split( "\n" );
+        parseFixes( labelsBlock, "LABEL" );
+        return;
     }
     
     private void parsePaths( String[] block ) {
@@ -100,15 +103,33 @@ public class Sector {
     }
     
     private void parseFixes( String[] block, String fixType ) {
+        blockLoop:
         for ( String s : block ) {
-            s = s.replace( "   ", " " ).replace( "  ", " " ).replace( ";", "" );
+            s = s.replace( "      ", " ").replace( "     ", " ").replace( "   ", " " ).replace( "  ", " " ).replace( ";", "" );
             if ( s.equals( " " ) ||  s.equals( "  "  )) continue;
             
             String[] rawFix = s.split( " " );
+            
+            // check if fix already exists
+//            for ( Fix fix : this.fixes ) {
+//                if(fix.getName().equals( rawFix[0] ) && fix.getType().toString().equals( fixType )){
+//                    continue blockLoop;
+//                }
+//            }
+            
             try {
-                if ( fixType.equals( "FIX" ) ) {
+                if ( fixType.equals( "FIX"  ) ) {
                     this.fixes.add( new Fix( FixType.valueOf( fixType ), rawFix[ 0 ], rawFix[ 1 ], rawFix[ 2 ] ) );
-                } else {
+                }
+                else if( fixType.equals( "LABEL" )){
+                    if(rawFix[1].startsWith( "N" ) && rawFix[1].length() > 8) {
+                        this.fixes.add( new Fix( FixType.valueOf( fixType ), rawFix[ 0 ], rawFix[ 1 ], rawFix[ 2 ] ) );
+                    }
+                    else {
+                        this.fixes.add( new Fix( FixType.valueOf( fixType ), rawFix[ 0 ], rawFix[ 2 ], rawFix[ 3 ] ) );
+                    }
+                }
+                else {
                     this.fixes.add( new Fix( FixType.valueOf( fixType ), rawFix[ 0 ], rawFix.length == 5 ? rawFix[ 4 ] : rawFix[ 0 ], rawFix[ 1 ], rawFix[ 2 ], rawFix[ 3 ] ) );
                 }
             } catch ( Exception e ) {

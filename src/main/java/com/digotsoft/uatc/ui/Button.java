@@ -2,6 +2,10 @@ package com.digotsoft.uatc.ui;
 
 import com.digotsoft.uatc.Game;
 import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+
+import java.awt.*;
 
 public class Button extends UIElement {
 
@@ -13,14 +17,13 @@ public class Button extends UIElement {
         super(game, x, y, width, height);
         this.text = text;
 
-        this.font = new TrueTypeFont(new java.awt.Font("Arial", 0, 15), true);
+        this.font = new TrueTypeFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15), true);
     }
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         g.setColor(Color.white);
         g.drawRect( this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        //g.setColor();
         this.font.drawString(this.getX(), this.getY(), this.text);
     }
 

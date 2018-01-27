@@ -52,6 +52,17 @@ public class Game extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
+        if(Display.getWidth() != container.getWidth() || Display.getHeight() != container.getHeight()) {
+            try {
+                AppGameContainer appGameContainer = (AppGameContainer)container;
+    
+                appGameContainer.setDisplayMode(Display.getWidth(), Display.getHeight(), false);
+                //appGameContainer.reinit();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
         if( this.active != null ) {
             this.active.update( container, delta );
         }
@@ -74,8 +85,15 @@ public class Game extends BasicGame {
             this.active.mouseWheelMoved( change );
         }
     }
-
-    public static void run(Runnable runnable) {
+    
+    @Override
+    public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
+        if( this.active != null ) {
+            this.active.mouseDragged( oldx, oldy, newx, newy );
+        }
+    }
+    
+    public static void run( Runnable runnable) {
         queue.add(runnable);
     }
     
@@ -85,6 +103,8 @@ public class Game extends BasicGame {
         app.setDisplayMode(WIDTH, HEIGHT, false);
         app.setForceExit(false);
         app.setUpdateOnlyWhenVisible( false );
+        app.setAlwaysRender( true );
+        //app.setShowFPS( false );
         app.start();
     }
 
