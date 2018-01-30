@@ -1,4 +1,4 @@
-package com.digotsoft.uatc.aviation;
+package com.digotsoft.uatc.radar;
 
 import com.digotsoft.uatc.util.Converters;
 import lombok.Getter;
@@ -144,7 +144,7 @@ public class Sector {
     }
     
     private static void loadSector( String sectorName ) {
-        Scanner scanner = new Scanner( Thread.currentThread().getContextClassLoader().getResourceAsStream( "data/sectors/" + sectorName + ".sct" ) );
+        Scanner scanner = new Scanner( Thread.currentThread().getContextClassLoader().getResourceAsStream( "data/sectors/austria/" + sectorName + ".sct" ) );
         StringBuilder data = new StringBuilder();
         List<String> parts = new ArrayList<>();
         boolean defineCleared = false;

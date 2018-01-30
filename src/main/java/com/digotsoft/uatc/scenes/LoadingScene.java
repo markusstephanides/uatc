@@ -1,10 +1,8 @@
 package com.digotsoft.uatc.scenes;
 
-import com.digotsoft.uatc.*;
 import com.digotsoft.uatc.Game;
-import com.digotsoft.uatc.aviation.Sector;
-import com.digotsoft.uatc.speech.SpeechReco;
-import org.lwjgl.LWJGLUtil;
+import com.digotsoft.uatc.radar.Sector;
+import com.digotsoft.uatc.sim.StaticData;
 import org.newdawn.slick.*;
 
 /**
@@ -25,14 +23,16 @@ public class LoadingScene extends Renderable {
     }
     
     private void loadGameStuff() {
-     new Thread(() -> {
+        new Thread( () -> {
             // init the speech reco
             //SpeechReco.init();
             // load sectors
             Sector.loadSectors();
+            // load airports
+            StaticData.load();
             // done - switch to main menu //TODO
-            Game.run( () -> this.game.switchScene( GameScene.class ));
-       }).start();
+            Game.run( () -> this.game.switchScene( GameScene.class ) );
+        } ).start();
     }
     
     public void render( GameContainer container, Graphics g ) throws SlickException {

@@ -12,11 +12,11 @@ grammar grammar;
 <locPos> = ( left | center | right );
 <action> = ( cleared to land | hold position | report heading );
 <argAction> = ( taxi to | line up and wait );
-<runway> = runway <number> <number> <locPos>;
+<runways> = runways <number> <number> <locPos>;
 
 public <simpleSyntax> = <callsign> <action>;
-public <actRwySyntax> = <callsign> <argAction>{1} ( <runway>{1} );
-public <clearance> = <callsign> cleared to your destination out of <runway> squawk <number> <number> <number> <number>;
+public <actRwySyntax> = <callsign> <argAction>{1} ( <runways>{1} );
+public <clearance> = <callsign> cleared to your destination out of <runways> squawk <number> <number> <number> <number>;
 
 
 // numbers

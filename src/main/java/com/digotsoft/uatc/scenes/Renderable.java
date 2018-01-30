@@ -37,6 +37,10 @@ public abstract class Renderable {
     
     }
     
+    public void mouseClicked( int button, int x, int y, int clickCount ) {
+    
+    }
+    
     public boolean isInRenderArea( GameContainer container, float x, float y) {
         return x > 0 && y > 0 && x <= container.getWidth() && y <= container.getHeight();
     }

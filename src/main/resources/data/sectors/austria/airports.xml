@@ -1,0 +1,30 @@
+<airports airac="1801" date="27/01/2018">
+    <airport icao="LOWW" name="Wien Schwechat" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
+        <runways>
+            <runway name="29" course="292"/>
+            <runway name="16" course="161"/>
+            <runway name="34" course="341"/>
+            <runway name="11" course="112"/>
+        </runways>
+        <stands>
+            <stand type="gate" name="F01" n="N048.07.05.546" e="E016.33.54.979" cat="M"/>
+            <stand type="gate" name="F04" n="N048.07.08.873" e="E016.33.59.301" cat="M"/>
+            <stand type="gate" name="F05" n="N048.07.04.599" e="E016.33.57.772" cat="M"/>
+            <stand type="gate" name="F08" n="N048.07.08.545" e="E016.34.01.413" cat="M"/>
+            <stand type="gate" name="F09" n="N048.07.03.981" e="E016.33.59.787" cat="M"/>
+            <stand type="gate" name="F12" n="N048.07.07.887" e="E016.34.03.452" cat="M"/>
+            <stand type="gate" name="F13" n="N048.07.03.351" e="E016.34.01.688" cat="M"/>
+            <stand type="gate" name="F16" n="N048.07.07.266" e="E016.34.05.369" cat="M"/>
+            <stand type="gate" name="F17" n="N048.07.02.692" e="E016.34.03.651" cat="M"/>
+        </stands>
+    </airport>
+    <airport icao="LOWL" name="Blue Danube Flughafen Linz" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
+        <runways>
+            <runway name="08" course="084"/>
+            <runway name="26" course="264"/>
+        </runways>
+        <stands>
+            <stand type="gate" name="E3" n="N048.07.05.546" e="E016.33.54.979" cat="M"/>
+        </stands>
+    </airport>
+</airports>

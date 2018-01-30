@@ -1,4 +1,4 @@
-package com.digotsoft.uatc.aviation;
+package com.digotsoft.uatc.radar;
 
 import com.digotsoft.uatc.util.Converters;
 import lombok.Getter;
