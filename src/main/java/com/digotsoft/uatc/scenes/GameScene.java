@@ -118,6 +118,7 @@ public class GameScene extends Renderable {
     @Override
     public void mouseClicked( int button, int x, int y, int clickCount ) {
         this.gui.mouseClicked( button, x, y, clickCount );
+        this.radar.mouseClicked( button, x, y, clickCount );
     }
     
     @Override

@@ -1,7 +1,7 @@
 <airlines>
     <airline name="Austrian Airlines" callsignShort="AUA" callsign="Austrian">
         <aircrafts>
-            <aircraft name="B737" category="M"/>
+            <aircraft name="B738" category="M"/>
         </aircrafts>
     </airline>
 </airlines>

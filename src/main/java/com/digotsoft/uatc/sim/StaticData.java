@@ -29,10 +29,15 @@ public class StaticData {
         loadAirports();
     }
     
-    public static String generateRandomCallsign() {
+    public static String generateRandomCallsign(Airline airline) {
+        Random random = new Random();
+        return airline.getCallsignShort() + ( random.nextInt( 899 ) + 100 );
+    }
+    
+    public static Airline chooseAirline() {
         Random random = new Random();
         int index = random.nextInt( airlines.size() );
-        return airlines.get( index ).getCallsignShort() + ( random.nextInt( 899 ) + 100 );
+        return airlines.get( index );
     }
     
     public static String getRandomAirport( String except ) {
@@ -49,7 +54,6 @@ public class StaticData {
                 }
             }
             
-            
             int index = random.nextInt( icaos.size() );
             return icaos.get( index );
         }
@@ -63,6 +67,16 @@ public class StaticData {
         }
         
         return null;
+    }
+    
+    public static String getCallsignByShortCS(String cs) {
+        for ( Airline airline : airlines ) {
+            if(cs.contains( airline.getCallsignShort() )) {
+                return airline.getCallsign();
+            }
+        }
+        
+        return "";
     }
     
     private static void loadAirports() {

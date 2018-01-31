@@ -10,7 +10,9 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,9 @@ public class Radar extends Renderable {
     private GameContainer container;
     private GameScene gameScene;
     
+    private Flight currentFlight;
+    private Flightstrip flightstrip;
+    
     public Radar( GameScene gameScene ) {
         super( null );
         this.gameScene = gameScene;
@@ -61,11 +66,12 @@ public class Radar extends Renderable {
         this.posZoomSettings = new PosZoomSetting[ 4 ];
         this.background = new Color( 0, 0, 10 );
         this.activeSector = Sector.getSector( "LOVV_CTR" );
-        this.radarFont = new TrueTypeFont( new java.awt.Font( "Arial Narrow", java.awt.Font.PLAIN, 8 ), true );
-        this.labelFont = new TrueTypeFont( new java.awt.Font( "Arial", java.awt.Font.PLAIN, 12 ), true );
+        this.radarFont = new TrueTypeFont( new java.awt.Font( "Tahome", java.awt.Font.PLAIN, 8 ), true );
+        this.labelFont = new TrueTypeFont( new java.awt.Font( "Arial", java.awt.Font.PLAIN, 12 ) , true );
         this.cameraX = this.gameScene.getSimulator().getControllingAirport().getX();
         this.cameraY = this.gameScene.getSimulator().getControllingAirport().getY();
         this.zoom = this.gameScene.getSimulator().getControllingAirport().getZoom();
+        this.flightstrip = new Flightstrip();
         GL11.glClearColor( 0, 0, 0.06f, 1 );
     }
     
@@ -113,20 +119,24 @@ public class Radar extends Renderable {
         for ( Flight flight : this.gameScene.getSimulator().getFlights() ) {
             float x = Math.round( ( ( flight.getX() - this.cameraX ) * this.zoom ) );
             float y = Math.round( ( ( flight.getY() - this.cameraY ) * this.zoom ) );
-            
-            // square
             g.setColor( Color.green );
+            // square
             g.drawRect( x - 3, y - 3, 6, 6 );
             // line
             g.drawLine( x, y, x + flight.getLabelDistance(), y - flight.getLabelDistance() );
             
-            x += flight.getLabelDistance() + 2;
-            y -= flight.getLabelDistance() + 6;
+            x += flight.getLabelXOffset();
+            y -= flight.getLabelYOffset();
+            
+            // rect around it (debug)
+            g.drawRect( x, y, flight.getLabelWidth(), flight.getLabelHeight() );
             
             Color color = Color.green;
             this.labelFont.drawString( 1 + x, 1 + y, flight.getCallsign(), Color.black );
             this.labelFont.drawString( x, y, flight.getCallsign(), color );
         }
+        
+        this.flightstrip.render( container, g, this.currentFlight );
     }
     
     public void saveCurrPosZoom( int index ) {
@@ -144,6 +154,26 @@ public class Radar extends Renderable {
     }
     
     @Override
+    public void mouseClicked( int button, int x, int y, int clickCount ) {
+        if ( button == Input.MOUSE_LEFT_BUTTON ) {
+            // search for flight
+            for ( Flight flight1 : this.gameScene.getSimulator().getFlights() ) {
+                float fx = Math.round( ( ( flight1.getX() - this.cameraX ) * this.zoom ) );
+                float fy = Math.round( ( ( flight1.getY() - this.cameraY ) * this.zoom ) );
+                
+                if ( Rectangle.contains( x, y, fx + flight1.getLabelXOffset(),
+                        fy - flight1.getLabelYOffset(),
+                        flight1.getLabelWidth(), flight1.getLabelHeight() ) ) {
+                    this.currentFlight = flight1;
+                    break;
+                }
+                
+                this.currentFlight = null;
+            }
+        }
+    }
+    
+    @Override
     public void update( GameContainer container, int delta ) throws SlickException {
         if ( container.getInput().isKeyDown( Input.KEY_LEFT ) ) this.cameraX -= this.moveSpeed * delta;
         if ( container.getInput().isKeyDown( Input.KEY_RIGHT ) ) this.cameraX += this.moveSpeed * delta;
@@ -155,7 +185,8 @@ public class Radar extends Renderable {
     
     @Override
     public void mouseWheelMoved( int change ) {
-        if((change > 0 && this.zoom >= 362886.5932551272) || (change < 0 && this.zoom <= 38.554328942953354) ) return;
+        if ( ( change > 0 && this.zoom >= 362886.5932551272 ) || ( change < 0 && this.zoom <= 38.554328942953354 ) )
+            return;
         double zoomBefore = this.zoom;
         this.zoom *= ( change > 0 ? this.zoomSpeed : 1 / this.zoomSpeed );
         this.cameraX += ( this.container.getWidth() / zoomBefore - this.container.getWidth() / this.zoom ) / 2;
