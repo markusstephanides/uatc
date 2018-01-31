@@ -20,7 +20,7 @@ public class Flight {
     private double x;
     private double y;
     
-    private float labelDistance = 20;
+    private float labelDistance = 40;
     
     public Flight( String callsign, Flightplan flightplan ) {
         this.callsign = callsign;

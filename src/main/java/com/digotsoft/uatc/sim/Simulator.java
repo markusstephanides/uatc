@@ -29,9 +29,9 @@ public class Simulator {
             String dep = this.controllingAirport.getIcao();
             String arr = StaticData.getRandomAirport( dep );
             
-            Flight flight = new Flight(callsign, new Flightplan( dep, arr, getAvailableStand( this.controllingAirport ), Flightrule.IFR, "DCT"));
+            Flight flight = new Flight(callsign, new Flightplan( dep, arr, getAvailableStand( this.controllingAirport ), Flightrule.IFR, DynamicData.findRoute(dep, arr)));
             this.flights.add( flight );
-            System.out.println("Added flight " + callsign);
+            System.out.println("Added flight " + callsign + " from " + dep + " to " + arr + " via " + flight.getFlightplan().getRoute());
         }
     }
     

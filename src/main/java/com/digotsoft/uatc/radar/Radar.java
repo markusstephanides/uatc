@@ -121,7 +121,7 @@ public class Radar extends Renderable {
             g.drawLine( x, y, x + flight.getLabelDistance(), y - flight.getLabelDistance() );
             
             x += flight.getLabelDistance() + 2;
-            y -= flight.getLabelDistance() - 2;
+            y -= flight.getLabelDistance() + 6;
             
             Color color = Color.green;
             this.labelFont.drawString( 1 + x, 1 + y, flight.getCallsign(), Color.black );
@@ -155,6 +155,7 @@ public class Radar extends Renderable {
     
     @Override
     public void mouseWheelMoved( int change ) {
+        if((change > 0 && this.zoom >= 362886.5932551272) || (change < 0 && this.zoom <= 38.554328942953354) ) return;
         double zoomBefore = this.zoom;
         this.zoom *= ( change > 0 ? this.zoomSpeed : 1 / this.zoomSpeed );
         this.cameraX += ( this.container.getWidth() / zoomBefore - this.container.getWidth() / this.zoom ) / 2;
