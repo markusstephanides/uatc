@@ -30,8 +30,12 @@ public class Simulator {
             // find dep and dest
             String dep = this.controllingAirport.getIcao();
             String arr = StaticData.getRandomAirport( dep );
+            String route = DynamicData.findRoute(dep, arr);
+            // cruise fl and cruise speed
+            String cruiseFL = String.valueOf(200 + (route.split(" ").length * 20));
+            String cruiseSpeed = "250";
             
-            Flight flight = new Flight(callsign, aircraft, new Flightplan( dep, arr, getAvailableStand( this.controllingAirport ), Flightrule.IFR, DynamicData.findRoute(dep, arr)));
+            Flight flight = new Flight(callsign, aircraft, new Flightplan( dep, arr, getAvailableStand( this.controllingAirport ), Flightrule.IFR, route, cruiseFL, cruiseSpeed));
             this.flights.add( flight );
             System.out.println("Added flight " + callsign + " from " + dep + " to " + arr + " via " + flight.getFlightplan().getRoute());
         }

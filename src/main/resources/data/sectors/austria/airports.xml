@@ -16,6 +16,13 @@
             <stand type="gate" name="F13" n="N048.07.03.351" e="E016.34.01.688" cat="M"/>
             <stand type="gate" name="F16" n="N048.07.07.266" e="E016.34.05.369" cat="M"/>
             <stand type="gate" name="F17" n="N048.07.02.692" e="E016.34.03.651" cat="M"/>
+            <stand type="gate" name="F22" n="N048.07.06.610"  e="E016.34.07.418" cat="M"/>
+            <stand type="gate" name="F23" n="N048.07.02.038" e="E016.34.05.637" cat="M"/>
+            <stand type="gate" name="F26" n="N048.07.02.692" e="E016.34.03.651" cat="M"/>
+            <stand type="gate" name="F27" n="N048.07.01.380"  e="E016.34.07.641" cat="M"/>
+            <stand type="gate" name="F32" n="N048.07.05.344" e="E016.34.11.371" cat="M"/>
+            <stand type="gate" name="F33" n="N048.07.00.791" e="E016.34.09.520" cat="M"/>
+
         </stands>
     </airport>
     <airport icao="LOWL" name="Blue Danube Flughafen Linz" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">

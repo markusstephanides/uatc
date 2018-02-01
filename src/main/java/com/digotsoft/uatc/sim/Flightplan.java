@@ -17,5 +17,7 @@ public class Flightplan {
     private Stand depStand;
     private Flightrule flightRule;
     private String route;
+    private String cruiseFL;
+    private String cruiseSpeed;
     
 }
