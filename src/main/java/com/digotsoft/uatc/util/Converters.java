@@ -2,6 +2,7 @@ package com.digotsoft.uatc.util;
 
 import org.newdawn.slick.Color;
 
+import java.util.HashMap;
 
 
 /**
@@ -17,6 +18,28 @@ public class Converters {
         int b = ( val >> 16 ) & 0xFF;
         
         return new Color( r, g, b );
+    }
+    
+    public static String convertNumberToWord(String nw) {
+        nw = convSpeechWord( nw );
+        HashMap<String, String> map = new HashMap<>();
+        map.put("zero", "0");
+        map.put("one", "1");
+        map.put("two", "2");
+        map.put("three", "3");
+        map.put("four", "4");
+        map.put("five", "5");
+        map.put("six", "6");
+        map.put("seven", "7");
+        map.put("eight", "8");
+        map.put("nine", "9");
+        
+        return map.get(nw);
+    }
+    
+    public static String convSpeechWord(String str){
+        return str.replace( "won", "one").replace("wan", "one" ).replace( "too", "two" ).replace( "to", "two" )
+                .replace( "tree", "three" ).replace( "fore", "four" ).replace("ate", "eight").replace( "aid", "eight" ).replace( "niner", "nine" );
     }
     
     public static double parseCoordinate( String strVal ) {

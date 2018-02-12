@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public abstract class UIElement extends Renderable {
 
-    private float x;
-    private float y;
+    protected float x;
+    protected float y;
     private float width;
     private float height;
 

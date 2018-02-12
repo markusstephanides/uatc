@@ -3,6 +3,7 @@ package com.digotsoft.uatc.scenes;
 import com.digotsoft.uatc.Game;
 import com.digotsoft.uatc.radar.Sector;
 import com.digotsoft.uatc.sim.StaticData;
+import com.digotsoft.uatc.speech.SpeechReco;
 import org.newdawn.slick.*;
 
 /**
@@ -12,6 +13,8 @@ import org.newdawn.slick.*;
 public class LoadingScene extends Renderable {
     
     private Font font;
+    private int progress;
+    private int maxProgress = 4;
     
     public LoadingScene( com.digotsoft.uatc.Game game ) {
         super( game );
@@ -25,13 +28,17 @@ public class LoadingScene extends Renderable {
     private void loadGameStuff() {
         new Thread( () -> {
             // init the speech reco
-            //SpeechReco.init();
+            SpeechReco.init();
+            LoadingScene.this.progress++;
             // load sectors
             Sector.loadSectors();
+            LoadingScene.this.progress++;
             // load airports
             StaticData.load();
+            LoadingScene.this.progress++;
             // done - switch to main menu //TODO
             Game.run( () -> this.game.switchScene( GameScene.class ) );
+            LoadingScene.this.progress++;
         } ).start();
     }
     
@@ -41,6 +48,7 @@ public class LoadingScene extends Renderable {
         int y = ( container.getHeight() - this.font.getHeight( text ) ) / 2;
         
         this.font.drawString( x, y, text );
+        this.font.drawString( x + 5, y + 25, Math.round( (LoadingScene.this.progress / LoadingScene.this.maxProgress) * 100f) + "%");
     }
     
     public void update( GameContainer container, int delta ) throws SlickException {

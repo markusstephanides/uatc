@@ -12,26 +12,26 @@ grammar grammar;
 <locPos> = ( left | center | right );
 <action> = ( cleared to land | hold position | report heading );
 <argAction> = ( taxi to | line up and wait );
-<runways> = runways <number> <number> <locPos>;
+<runway> = (runway <number>{1} <number>{1});
 
 public <simpleSyntax> = <callsign> <action>;
-public <actRwySyntax> = <callsign> <argAction>{1} ( <runways>{1} );
-public <clearance> = <callsign> cleared to your destination out of <runways> squawk <number> <number> <number> <number>;
+public <actRwySyntax> = <callsign> <argAction>{1} ( <runway>{1} );
+public <clearance> = <callsign>{1} cleared to your destination out of <runway>{1} squawk <number>{1} <number>{1} <number>{1} <number>{1};
 
 
 // numbers
 <zero> = ( zero );
 <one> = ( one | wan | won );
-<two> = ( two | too );
+<two> = ( two | to | too );
 <three> = ( three | tree );
 <four> = ( four | fore );
 <five> = ( five );
 <six> = ( six );
 <seven> = ( seven );
-<eight> = ( eight );
+<eight> = ( eight | ate | aid );
 <nine> = ( niner | nine );
 
-public <number> = ( <zero> | <one> | <two> | <three> | <four> | <five> | <six> | <seven> | <nine> );
+public <number> = ( <zero> | <one> | <two> | <three> | <four> | <five> | <six> | <seven> | <eight> | <nine> );
 
 // letters
 <a> = ( alpha );
@@ -39,7 +39,7 @@ public <number> = ( <zero> | <one> | <two> | <three> | <four> | <five> | <six> |
 <c> = ( charlie );
 <d> = ( delta );
 <e> = ( echo | eco );
-<f> = ( fox | foxtrott );
+<f> = ( fox | foxtrot );
 <g> = ( golf );
 <h> = ( hotel );
 <i> = ( india );

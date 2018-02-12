@@ -1,5 +1,5 @@
 <airports airac="1801" date="27/01/2018">
-    <airport icao="LOWW" name="Wien Schwechat" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
+    <airport icao="LOWW" shortName="Wien" name="Wien Schwechat" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
         <runways>
             <runway name="29" course="292"/>
             <runway name="16" course="161"/>
@@ -25,7 +25,7 @@
 
         </stands>
     </airport>
-    <airport icao="LOWL" name="Blue Danube Flughafen Linz" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
+    <airport icao="LOWL" name="Blue Danube Flughafen Linz" shortName="Linz" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
         <runways>
             <runway name="08" course="084"/>
             <runway name="26" course="264"/>

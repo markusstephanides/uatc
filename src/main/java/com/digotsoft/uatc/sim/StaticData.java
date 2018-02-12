@@ -40,22 +40,22 @@ public class StaticData {
         return airlines.get( index );
     }
     
-    public static String getRandomAirport( String except ) {
+    public static Airport getRandomAirport( String except ) {
         Random random = new Random();
         
         if ( except == null ) {
             int index = random.nextInt( airports.size() );
-            return airports.get( index ).getIcao();
+            return airports.get( index );
         } else {
-            List<String> icaos = new ArrayList<>();
+            List<Airport> airportPool = new ArrayList<>();
             for ( Airport airport : airports ) {
                 if ( ! airport.getIcao().equals( except ) ) {
-                    icaos.add( airport.getIcao() );
+                    airportPool.add( airport );
                 }
             }
             
-            int index = random.nextInt( icaos.size() );
-            return icaos.get( index );
+            int index = random.nextInt( airportPool.size() );
+            return airportPool.get( index );
         }
     }
     
@@ -144,13 +144,14 @@ public class StaticData {
                     Element airportElement = ( Element ) airportNode;
                     String airportICAO = airportElement.getAttribute( "icao" );
                     String airportName = airportElement.getAttribute( "name" );
+                    String airportShortName = airportElement.getAttribute( "shortName" );
                     double camX = Double.parseDouble( airportElement.getAttribute( "intlCamX" ) );
                     double camY = Double.parseDouble( airportElement.getAttribute( "intlCamY" ) );
                     double zoom = Double.parseDouble( airportElement.getAttribute( "intlCamZoom" ) );
     
     
     
-                    Airport airport = new Airport( airportICAO, airportName, new ArrayList<>(), new ArrayList<>(), camX, camY, zoom );
+                    Airport airport = new Airport( airportICAO, airportName, airportShortName, new ArrayList<>(), new ArrayList<>(), camX, camY, zoom );
                     
                     NodeList runways = doc.getElementsByTagName( "runway" );
                     for ( int r = 0; r < runways.getLength(); r++ ) {

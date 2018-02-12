@@ -33,7 +33,7 @@ public class Flightstrip {
         }
     }
     
-    public void render( GameContainer container, Graphics graphics, Flight flight ) {
+    public void render( GameContainer container, Graphics g, Flight flight ) {
         if ( this.x == - 1 ) {
             this.x = ( container.getWidth() - this.background.getWidth() ) / 2;
             this.y = ( container.getHeight() - this.background.getHeight() );
@@ -43,16 +43,18 @@ public class Flightstrip {
         
         if ( flight == null ) return;
         
-        this.callsignFontShort.drawString( this.x + 85, this.y + 23, flight.getCallsign() );
+        this.callsignFontShort.drawString( this.x + 85, this.y + 25, flight.getCallsign() );
         this.callsignFont.drawString( this.x + 85, this.y, StaticData.getCallsignByShortCS( flight.getCallsign() ).toUpperCase() );
-        this.callsignFont.drawString( this.x + 192, this.y, flight.getFlightplan().getDepAirport() );
-        this.callsignFont.drawString( this.x + 5, this.y, flight.getFlightplan().getDestAirport() );
+        this.callsignFont.drawString( this.x + 192, this.y, flight.getFlightplan().getDepAirport().getIcao() );
+        this.callsignFont.drawString( this.x + 5, this.y, flight.getFlightplan().getDestAirport().getIcao() );
+        this.callsignFont.drawString( this.x + 7, this.y + 36, flight.getSquawk() );
         this.callsignFont.drawString( this.x + 17, this.y + 13, flight.getFlightplan().getFlightRule().toString().substring( 0, 1 ) );
-        this.callsignFont.drawString( this.x + 42, this.y + 12, flight.getAircraft().getName() + " " + flight.getAircraft().getCategory() );
-    }
-    
-    private void centerPos() {
-    
+        this.callsignFont.drawString( this.x + 43, this.y + 12, flight.getAircraft().getName() + " " + flight.getAircraft().getCategory() );
+        this.callsignFont.drawString( this.x + 43, this.y, flight.getFlightplan().getCruiseFL() );
+        this.callsignFont.drawString( this.x + 43, this.y + 24, flight.getFlightplan().getCruiseSpeed() );
+        
+        //route
+        this.callsignFont.drawString( this.x + 247  , this.y, flight.getFlightplan().getRoute() );
     }
     
 }

@@ -1,6 +1,11 @@
 package com.digotsoft.uatc.sim;
 
+import com.digotsoft.uatc.util.Converters;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author MaSte
@@ -27,10 +32,18 @@ public class Flight {
     private float labelWidth = 50;
     private float labelHeight = 20;
     
-    public Flight( String callsign, Aircraft aircraft, Flightplan flightplan ) {
+    private FlightStatus status;
+    private long tickNextTx;
+    private Simulator simulator;
+    private Random random;
+    private String voice;
+    
+    public Flight( Simulator simulator, String callsign, Aircraft aircraft, Flightplan flightplan, FlightStatus status ) {
+        this.simulator = simulator;
         this.aircraft = aircraft;
         this.callsign = callsign;
         this.flightplan = flightplan;
+        this.status = status;
         this.clearedWaypoint = "";
         this.clearedFL = "";
         this.squawk = "1200";
@@ -38,5 +51,96 @@ public class Flight {
         this.onGround = false;
         this.x = flightplan.getDepStand().getX();
         this.y = flightplan.getDepStand().getY();
+        this.random = new Random();
+        this.tickNextTx = this.simulator.getTick() + this.random.nextInt( 300 ) + 40;
+        this.voice = "male_1";
     }
+    
+    public void update( long tick ) {
+        if ( this.tickNextTx == tick ) {
+            this.nextAction();
+        }
+    }
+    
+    public void nextAction() {
+        switch ( this.status ) {
+            case STARTED_AT_STAND:
+                this.status = FlightStatus.WAITING_FOR_FP_CLEARANCE;
+                this.simulator.transmit( this, this.voice, this.flightplan.getDepAirport().getShortName().toLowerCase() + " tower " + this.callbackToVoiceString() + " req_ifr_to " + this.flightplan.getDestAirport().getShortName().toLowerCase(), true );
+        }
+    }
+    
+    public void processATCResponse( String resp ) {
+        if ( this.status == FlightStatus.WAITING_FOR_FP_CLEARANCE ) {
+            System.out.println( "FP clearance:" + resp );
+            String[] data = resp.split( " " );
+            String[] runwayDigits = this.extract( data, "runway", 2 );
+            String[] squawkDigits = this.extract( data, "squawk", 4 );
+            
+            String runwayStr = "";
+            String squawkStr = "";
+            
+            for ( String runwayDigit : runwayDigits ) {
+                runwayStr += Converters.convSpeechWord(runwayDigit) + "_h ";
+            }
+            
+            runwayStr = runwayStr.substring( 0, runwayStr.length() - 1 );
+            
+            for ( String squawkDigit : squawkDigits ) {
+                squawkStr += Converters.convSpeechWord(squawkDigit) + "_h ";
+            }
+            
+            squawkStr = squawkStr.substring( 0, squawkStr.length() - 1 );
+            
+            
+            this.status = FlightStatus.FP_CLEARANCE_WAITING_RB_CORR;
+            this.simulator.transmit( this, this.voice, this.callbackToVoiceString() + " clrd_to " + this.flightplan.getDestAirport().getShortName().toLowerCase() + " clrd_out_of_rwy " + runwayStr + " squawk " + squawkStr, true );
+            
+            // TODO The responses
+        }
+    }
+    
+    private String[] extract( String[] data, String search, int length ) {
+        List<String> infos = new ArrayList<>();
+        boolean act = false;
+        for ( int i = 0; i < data.length; i++ ) {
+            String d = data[ i ];
+            
+            if ( act ) {
+                infos.add( d );
+                length--;
+                
+                if(length == 0) {
+                    break;
+                }
+            }
+            
+            if ( d.equals( search ) ) {
+                act = true;
+            }
+        }
+        
+        return infos.toArray( new String[ infos.size() ] );
+    }
+    
+    private String callbackToVoiceString() {
+        StringBuilder str = new StringBuilder();
+        if ( this.callsign.startsWith( "AUA" ) ) {
+            str.append( "austrian_h" );
+        }
+        
+        str.append( " " );
+        
+        String[] numberToWord = new String[]{ "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        for ( char c : this.callsign.toCharArray() ) {
+            if ( Character.isDigit( c ) ) {
+                int i = ( int ) c - 48;
+                str.append( numberToWord[ i ] ).append( "_h " );
+            }
+        }
+        
+        return str.substring( 0, str.length() - 1 );
+    }
+    
+    
 }

@@ -12,8 +12,8 @@ import lombok.Setter;
 @Getter @Setter
 public class Flightplan {
     
-    private String depAirport;
-    private String destAirport;
+    private Airport depAirport;
+    private Airport destAirport;
     private Stand depStand;
     private Flightrule flightRule;
     private String route;

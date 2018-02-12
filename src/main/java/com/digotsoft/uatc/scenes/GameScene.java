@@ -18,11 +18,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class GameScene extends Renderable {
     
+    @Getter
+    private Simulator simulator;
     private Radar radar;
     private GUI gui;
     private AtomicBoolean ppt;
-    @Getter
-    private Simulator simulator;
     
     private int guiBarHeight = 30;
     private GameContainer container;
@@ -33,19 +33,21 @@ public class GameScene extends Renderable {
     
     @Override
     public void loaded() {
-        this.simulator = new Simulator( StaticData.getAirportByICAO( "LOWW" ) );
+        this.simulator = new Simulator( this, StaticData.getAirportByICAO( "LOWW" ) );
         this.simulator.generateFlights();
-        this.radar = new Radar(this);
+        this.radar = new Radar( this );
         this.ppt = new AtomicBoolean();
-     
+        
         this.gui = new GUI( null );
-        this.gui.addElement( "vorButton", new Button( null, "VOR", 0, 0, 40, 30 ) );
-        this.gui.addElement( "ndbButton", new Button( null, "NDB", 40, 0, 40, 30 ) );
-        this.gui.addElement( "fixButton", new Button( null, "FIX", 80, 0, 40, 30 ) );
-        this.gui.addElement( "z1Button", new Button( null, "Z1", 120, 0, 30, 30 ) );
-        this.gui.addElement( "z2Button", new Button( null, "Z2", 150, 0, 30, 30 ) );
-        this.gui.addElement( "z3Button", new Button( null, "Z3", 180, 0, 30, 30 ) );
-        this.gui.addElement( "z4Button", new Button( null, "Z4", 210, 0, 30, 30 ) );
+        this.gui.addElement( "vorButton", new Button( null, "VOR", 0, 0, 40, 30, true ) );
+        this.gui.addElement( "ndbButton", new Button( null, "NDB", 40, 0, 40, 30, true ) );
+        this.gui.addElement( "fixButton", new Button( null, "FIX", 80, 0, 40, 30, true ) );
+        this.gui.addElement( "z1Button", new Button( null, "Z1", 120, 0, 30, 30, true ) );
+        this.gui.addElement( "z2Button", new Button( null, "Z2", 150, 0, 30, 30, true ) );
+        this.gui.addElement( "z3Button", new Button( null, "Z3", 180, 0, 30, 30, true ) );
+        this.gui.addElement( "z4Button", new Button( null, "Z4", 210, 0, 30, 30, true ) );
+        this.gui.addElement( "txButton", new Button( null, "TX", 0, Integer.MAX_VALUE, 70, 50, false ) );
+        this.gui.addElement( "rxButton", new Button( null, "RX", 70, Integer.MAX_VALUE, 70, 50, false ) );
         
         
         this.gui.getButtonElement( "vorButton" ).addClickListener( () -> {
@@ -88,6 +90,10 @@ public class GameScene extends Renderable {
         } );
     }
     
+    public void setRxButton( boolean active ) {
+        this.gui.getButtonElement( "rxButton" ).setState( active );
+    }
+    
     @Override
     public void render( GameContainer container, Graphics g ) throws SlickException {
         this.radar.render( container, g );
@@ -99,17 +105,20 @@ public class GameScene extends Renderable {
     @Override
     public void update( GameContainer container, int delta ) throws SlickException {
         if ( this.container == null ) this.container = container;
+        this.simulator.update();
         
         this.radar.update( container, delta );
         if ( ! this.ppt.get() ) {
             if ( container.getInput().isKeyDown( Input.KEY_RALT ) ) {
+                this.gui.getButtonElement( "txButton" ).setState( true );
                 this.ppt = SpeechReco.read( ( result ) -> {
-                    System.out.println( result );
+                    this.simulator.processATCTX(result);
                 } );
             }
         }
         if ( this.ppt.get() ) {
             if ( ! container.getInput().isKeyDown( Input.KEY_RALT ) ) {
+                this.gui.getButtonElement( "txButton" ).setState( false );
                 this.ppt.set( false );
             }
         }

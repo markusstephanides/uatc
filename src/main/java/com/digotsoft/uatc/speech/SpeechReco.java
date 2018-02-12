@@ -1,17 +1,15 @@
 package com.digotsoft.uatc.speech;
 
+import com.digotsoft.uatc.util.StringCallable;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
 import edu.cmu.sphinx.api.StreamSpeechRecognizer;
 import edu.cmu.sphinx.result.WordResult;
-import org.omg.CORBA.portable.InputStream;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -20,7 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SpeechReco {
     
-    private static LiveSpeechRecognizer recognizer;
+    private static StreamSpeechRecognizer recognizer;
+    private static SpeechRecorder speechRecorder;
     
     public static void init() {
         Configuration configuration = new Configuration();
@@ -33,29 +32,50 @@ public class SpeechReco {
         configuration.setUseGrammar( true );
         
         try {
-            recognizer = new LiveSpeechRecognizer( configuration );
-            recognizer.startRecognition( false );
+            recognizer = new StreamSpeechRecognizer( configuration );
+            speechRecorder = new SpeechRecorder();
+            //recognizer.startRecognition( false );
         } catch ( IOException e ) {
             e.printStackTrace();
         }
     }
     
-    public static AtomicBoolean read( SpeechRecoCallable callable ) {
+    public static AtomicBoolean read( StringCallable callable ) {
         AtomicBoolean atomicBoolean = new AtomicBoolean( true );
         new Thread( () -> {
-            StringBuilder resultStr = new StringBuilder();
+            new Thread( speechRecorder::start ).start();
+            
             while ( atomicBoolean.get() ) {
-                SpeechResult result = recognizer.getResult();
-                for ( WordResult wordResult : result.getWords() ) {
-                
-                }
-                if ( result != null )
-                    resultStr.append( result.getHypothesis() );
+            
+            }
+            speechRecorder.finish();
+            try {
+                recognizer.startRecognition( new FileInputStream( "speech.wav" ) );
+            } catch ( FileNotFoundException e ) {
+                e.printStackTrace();
             }
             
-            System.out.println( "Stop. Result: " + resultStr.toString() );
-            callable.call( resultStr.toString() );
+            SpeechResult result = null;
+            StringBuilder resultStr = new StringBuilder();
+            while ( ( result = recognizer.getResult() ) != null ) {
+                resultStr.append( result.getHypothesis() ).append( " " );
+            }
+    
+            recognizer.stopRecognition();
+            String finalStr = resultStr.toString();
+            finalStr = finalStr.substring( 0, finalStr.length() - 1 );
             
+            //recognizer.startRecognition( false );
+            //StringBuilder resultStr = new StringBuilder();
+//            while ( atomicBoolean.get() ) {
+//                SpeechResult result = recognizer.getResult();
+//
+//                if ( result != null )
+//                    resultStr.append( result.getHypothesis() );
+//            }
+//            recognizer.stopRecognition();
+            System.out.println( "Stop. Result: " + finalStr );
+            callable.call( finalStr );
         } ).start();
         
         return atomicBoolean;

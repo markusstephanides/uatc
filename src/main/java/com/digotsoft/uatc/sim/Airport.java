@@ -19,6 +19,7 @@ public class Airport {
     
     private String icao;
     private String name;
+    private String shortName;
     private List<Runway> runways;
     private List<Stand> stands;
     private double x;

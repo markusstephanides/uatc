@@ -1,5 +1,7 @@
 package com.digotsoft.uatc.sim;
 
+import com.digotsoft.uatc.util.StringCallable;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -11,14 +13,16 @@ import java.nio.charset.Charset;
 
 public class DynamicData {
 
-    public static String findRoute(String dep, String dest) {
-        String airac = "1801";
-        String url = "http://vau.aero/route/getRoute.php?multi&dep=" + dep + "&nats=&airac=" + airac + "&dest=" + dest + "&rt=&lvl=H&transit=&transit1=&transit2=&omit=&omit1=&omit2=";
-        String data = getHTML(url);
-
-        String[] splitted = data.split("\\|");
-
-        return splitted[3].split("\\+")[1];
+    public static void findRoute( String dep, String dest, StringCallable callable) {
+        new Thread(() -> {
+            String airac = "1801";
+            String url = "http://vau.aero/route/getRoute.php?multi&dep=" + dep + "&nats=&airac=" + airac + "&dest=" + dest + "&rt=&lvl=H&transit=&transit1=&transit2=&omit=&omit1=&omit2=";
+            String data = getHTML(url);
+    
+            String[] splitted = data.split("\\|");
+    
+            callable.call( splitted[3].split("\\+")[1] );
+        }).start();
     }
 
     public static String getHTML(String urlToRead) {

@@ -28,13 +28,14 @@ public class Button extends UIElement {
     private int textHeight;
     private Runnable clickRunnable;
     
-    public Button( Game game, String text, float x, float y, float width, float height ) {
+    public Button( Game game, String text, float x, float y, float width, float height, boolean active ) {
         super( game, x, y, width, height );
         this.foreColor = new Color( Color.white );
         this.backColor = new Color( Color.blue );
         this.borderColor = new Color( Color.white );
         this.font = new TrueTypeFont( new java.awt.Font( "Arial", Font.BOLD, 15 ), true );
         this.setText( text );
+        this.setState( active );
     }
     
     private void setText( String text ) {
@@ -45,6 +46,9 @@ public class Button extends UIElement {
     
     @Override
     public void render( GameContainer container, Graphics g ) throws SlickException {
+        if(this.x == Integer.MAX_VALUE) this.x = container.getWidth() - this.getWidth();
+        if(this.y == Integer.MAX_VALUE) this.y = container.getHeight() - this.getHeight();
+        
         g.setColor( this.backColor );
         g.fillRect( this.getX(), this.getY(), this.getWidth(), this.getHeight() );
         g.setColor( this.borderColor );
