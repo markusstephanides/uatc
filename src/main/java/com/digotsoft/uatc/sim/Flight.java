@@ -105,9 +105,10 @@ public class Flight {
         }
         else if ( this.status == FlightStatus.FP_CLEARANCE_WAITING_RB_CORR ) {
             if(resp.contains("correct")) {
-                this.simulator.setPlanesMayTx(true);
-                this.status = FlightStatus.WAITING_FOR_STARTUP_AND_PUSHBACK;
+                System.out.println("Hi");
+                this.simulator.finishTx();
                 this.setNextActionTick(20 * 2, 20 * 5);
+                this.status = FlightStatus.WAITING_FOR_STARTUP_AND_PUSHBACK;
             }
         }
     }

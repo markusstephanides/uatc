@@ -47,6 +47,7 @@ public class Simulator {
     
     public void transmit( Flight flight, String voice, String line, boolean waitForResponse ) {
         if ( ! this.planesMayTx && flight != this.maySpeak ) {
+            System.out.println(flight.getCallsign() + " wait");
             this.transmissionsQueue.add( new WaitingTransmission( voice, line, null, waitForResponse, flight ) );
             return;
         }
@@ -62,6 +63,11 @@ public class Simulator {
         } );
     }
     
+    public void finishTx() {
+        this.maySpeak = null;
+        this.planesMayTx = true;
+    }
+    
     public void update() {
         if ( System.currentTimeMillis() - startMs >= 1000 / ticksPerSecond ) {
             this.tick++;
@@ -69,6 +75,7 @@ public class Simulator {
         }
         
         if ( this.planesMayTx && ( this.tick - this.lastTxTick ) == this.lastTxWaitTicks && this.transmissionsQueue.size() > 0 ) {
+            System.out.println("ok ");
             WaitingTransmission waitingTransmission = this.transmissionsQueue.poll();
             this.transmit( waitingTransmission.getFlight(), waitingTransmission.getVoice(), waitingTransmission.getLine(), waitingTransmission.isWaitForResponse() );
         }
