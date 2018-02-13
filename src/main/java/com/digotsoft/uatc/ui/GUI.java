@@ -57,4 +57,11 @@ public class GUI extends Renderable {
             element.update( container, delta );
         }
     }
+
+    @Override
+    public void mouseDragged(int oldx, int oldy, int newx, int newy) {
+        for (UIElement uiElement : this.elements.values()) {
+            uiElement.mouseDragged(oldx, oldy, newx, newy);
+        }
+    }
 }

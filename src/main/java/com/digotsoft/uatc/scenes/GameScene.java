@@ -5,6 +5,7 @@ import com.digotsoft.uatc.radar.Radar;
 import com.digotsoft.uatc.sim.Simulator;
 import com.digotsoft.uatc.sim.StaticData;
 import com.digotsoft.uatc.speech.SpeechReco;
+import com.digotsoft.uatc.ui.ArrDepBox;
 import com.digotsoft.uatc.ui.Button;
 import com.digotsoft.uatc.ui.GUI;
 import lombok.Getter;
@@ -46,9 +47,11 @@ public class GameScene extends Renderable {
         this.gui.addElement( "z2Button", new Button( null, "Z2", 150, 0, 30, 30, true ) );
         this.gui.addElement( "z3Button", new Button( null, "Z3", 180, 0, 30, 30, true ) );
         this.gui.addElement( "z4Button", new Button( null, "Z4", 210, 0, 30, 30, true ) );
+        this.gui.addElement( "zPButton", new Button( null, "Z+", 240, 0, 30, 30, true ) );
+        this.gui.addElement( "zMButton", new Button( null, "Z-", 270, 0, 30, 30, true ) );
         this.gui.addElement( "txButton", new Button( null, "TX", 0, Integer.MAX_VALUE, 70, 50, false ) );
         this.gui.addElement( "rxButton", new Button( null, "RX", 70, Integer.MAX_VALUE, 70, 50, false ) );
-        
+        this.gui.addElement("arrDepBox", new ArrDepBox(null, Integer.MAX_VALUE, Integer.MAX_VALUE, 250, 300, this.simulator));
         
         this.gui.getButtonElement( "vorButton" ).addClickListener( () -> {
             GameScene.this.radar.setDisplayVors( ! GameScene.this.radar.isDisplayVors() );
@@ -87,6 +90,14 @@ public class GameScene extends Renderable {
             if ( GameScene.this.container.getInput().isKeyDown( Input.KEY_LSHIFT ) )
                 GameScene.this.radar.saveCurrPosZoom( 3 );
             else GameScene.this.radar.loadPosZoom( 3 );
+        } );
+
+        this.gui.getButtonElement( "zPButton" ).addClickListener( () -> {
+            this.radar.zoom(1);
+        } );
+
+        this.gui.getButtonElement( "zMButton" ).addClickListener( () -> {
+            this.radar.zoom(-1);
         } );
     }
     
@@ -143,6 +154,7 @@ public class GameScene extends Renderable {
     @Override
     public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
         if ( oldy > this.guiBarHeight && newy > this.guiBarHeight ) {
+            this.gui.mouseDragged(oldx, oldy, newx, newy);
             this.radar.mouseDragged( oldx, oldy, newx, newy );
         }
     }

@@ -4,6 +4,7 @@ import com.digotsoft.uatc.scenes.GameScene;
 import com.digotsoft.uatc.speech.VoiceGenerator;
 import com.digotsoft.uatc.util.Converters;
 import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.Sys;
 
 import java.lang.reflect.Array;
@@ -23,7 +24,7 @@ public class Simulator {
     private List<String> occupiedGates;
     private VoiceGenerator voiceGenerator;
     private Queue<WaitingTransmission> transmissionsQueue;
-    private boolean planesMayTx = true;
+    @Setter private boolean planesMayTx = true;
     private GameScene gameScene;
     
     @Getter
@@ -73,7 +74,12 @@ public class Simulator {
         }
         
         for ( Flight flight : this.flights ) {
-            flight.update( this.tick );
+            try {
+                flight.update(this.tick);
+            }
+            catch(Exception ex) {
+                return;
+            }
         }
     }
     
@@ -89,14 +95,14 @@ public class Simulator {
             String cruiseSpeed = "N250";
             Stand stand = getAvailableStand( aircraft, Simulator.this.controllingAirport );
             Simulator.this.occupiedGates.add( dep + ":" + stand.getName() );
-            DynamicData.findRoute( dep.getIcao(), arr.getIcao(), route -> {
-                // cruise fl and cruise speed
-                String cruiseFL = "FL" + String.valueOf( 200 + ( route.split( " " ).length * 20 ) );
+            String route = DynamicData.findRoute( dep.getIcao(), arr.getIcao());
+            // cruise fl and cruise speed
+            String cruiseFL = "FL" + String.valueOf( 140 + ( route.split( " " ).length * 20 ) );
                 
-                Flight flight = new Flight( Simulator.this, callsign, aircraft, new Flightplan( dep, arr, stand, Flightrule.IFR, route, cruiseFL, cruiseSpeed ), FlightStatus.STARTED_AT_STAND );
-                Simulator.this.flights.add( flight );
-                System.out.println( "Added flight " + callsign + " from " + dep.getIcao() + " to " + arr.getIcao() + " via " + flight.getFlightplan().getRoute() );
-            } );
+            Flight flight = new Flight( this, callsign, aircraft, new Flightplan( dep, arr, stand, Flightrule.IFR, route, cruiseFL, cruiseSpeed ), FlightStatus.STARTED_AT_STAND );
+            this.flights.add( flight );
+            System.out.println( "Added flight " + callsign + " from " + dep.getIcao() + " to " + arr.getIcao() + " via " + flight.getFlightplan().getRoute() );
+
         }
     }
     

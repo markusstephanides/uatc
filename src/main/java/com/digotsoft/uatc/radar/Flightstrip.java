@@ -2,6 +2,8 @@ package com.digotsoft.uatc.radar;
 
 import com.digotsoft.uatc.sim.Flight;
 import com.digotsoft.uatc.sim.StaticData;
+import lombok.Getter;
+import lombok.Setter;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
@@ -19,8 +21,8 @@ public class Flightstrip {
     private Font callsignFontShort;
     private Font callsignFont;
     
-    private float x = - 1;
-    private float y;
+    @Getter @Setter private float x = - 1;
+    @Getter @Setter private float y;
     
     public Flightstrip() {
         try {
@@ -39,7 +41,7 @@ public class Flightstrip {
             this.y = ( container.getHeight() - this.background.getHeight() );
         }
         
-        this.background.draw( this.x, container.getHeight() - this.background.getHeight() );
+        this.background.draw( this.x, this.y );
         
         if ( flight == null ) return;
         
@@ -56,5 +58,15 @@ public class Flightstrip {
         //route
         this.callsignFont.drawString( this.x + 247  , this.y, flight.getFlightplan().getRoute() );
     }
+
+    public int getWidth() {
+        return this.background.getWidth();
+    }
+
+    public int getHeight() {
+        return this.background.getHeight();
+    }
+
+
     
 }

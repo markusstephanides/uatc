@@ -2,6 +2,7 @@ package com.digotsoft.uatc.sim;
 
 import com.digotsoft.uatc.util.Converters;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class Flight {
     private float labelYOffset = 6 + 40;
     private float labelWidth = 50;
     private float labelHeight = 20;
+
+    @Setter @Getter private boolean assumed;
     
     private FlightStatus status;
     private long tickNextTx;
@@ -52,8 +55,12 @@ public class Flight {
         this.x = flightplan.getDepStand().getX();
         this.y = flightplan.getDepStand().getY();
         this.random = new Random();
-        this.tickNextTx = this.simulator.getTick() + this.random.nextInt( 300 ) + 40;
+        this.setNextActionTick(30, 300);
         this.voice = "male_1";
+    }
+
+    private void setNextActionTick(int from, int to) {
+        this.tickNextTx = this.simulator.getTick() + this.random.nextInt( to - from ) + from;
     }
     
     public void update( long tick ) {
@@ -95,8 +102,13 @@ public class Flight {
             
             this.status = FlightStatus.FP_CLEARANCE_WAITING_RB_CORR;
             this.simulator.transmit( this, this.voice, this.callbackToVoiceString() + " clrd_to " + this.flightplan.getDestAirport().getShortName().toLowerCase() + " clrd_out_of_rwy " + runwayStr + " squawk " + squawkStr, true );
-            
-            // TODO The responses
+        }
+        else if ( this.status == FlightStatus.FP_CLEARANCE_WAITING_RB_CORR ) {
+            if(resp.contains("correct")) {
+                this.simulator.setPlanesMayTx(true);
+                this.status = FlightStatus.WAITING_FOR_STARTUP_AND_PUSHBACK;
+                this.setNextActionTick(20 * 2, 20 * 5);
+            }
         }
     }
     

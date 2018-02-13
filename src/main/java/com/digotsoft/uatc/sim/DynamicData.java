@@ -10,19 +10,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DynamicData {
 
-    public static void findRoute( String dep, String dest, StringCallable callable) {
-        new Thread(() -> {
+    private static Map<String, String> routesCache = new HashMap<>();
+
+    public static String findRoute( String dep, String dest) {
+            if(routesCache.containsKey(dep + "-" + dest)) return routesCache.get(dep + "-" + dest);
+
             String airac = "1801";
             String url = "http://vau.aero/route/getRoute.php?multi&dep=" + dep + "&nats=&airac=" + airac + "&dest=" + dest + "&rt=&lvl=H&transit=&transit1=&transit2=&omit=&omit1=&omit2=";
             String data = getHTML(url);
     
             String[] splitted = data.split("\\|");
     
-            callable.call( splitted[3].split("\\+")[1] );
-        }).start();
+            String route =  splitted[3].split("\\+")[1];
+            routesCache.put(dep + "-" + dest, route);
+            return route;
     }
 
     public static String getHTML(String urlToRead) {

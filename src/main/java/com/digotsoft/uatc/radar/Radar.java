@@ -21,12 +21,14 @@ import java.util.List;
  * @created 25-Jan-18
  */
 public class Radar extends Renderable {
+
+    public static boolean lockRadarScrolling;
     
     private Sector activeSector;
     
     private double cameraX;
     private double cameraY;
-    private double zoom = 100;
+    @Getter @Setter private double zoom = 100;
     private double zoomSpeed = 1.1;
     private double moveSpeed = 0.5 / this.zoom;
     
@@ -117,9 +119,16 @@ public class Radar extends Renderable {
         
         // draw flights
         for ( Flight flight : this.gameScene.getSimulator().getFlights() ) {
+            if(flight == null) {
+                System.out.println("FLIGHT NULL!!!!");
+                continue;
+            }
+
+            Color colorToUse = flight.isAssumed() ? Color.yellow : Color.green;
+
             float x = Math.round( ( ( flight.getX() - this.cameraX ) * this.zoom ) );
             float y = Math.round( ( ( flight.getY() - this.cameraY ) * this.zoom ) );
-            g.setColor( Color.green );
+            g.setColor( colorToUse );
             // square
             g.drawRect( x - 3, y - 3, 6, 6 );
             // line
@@ -131,7 +140,7 @@ public class Radar extends Renderable {
             // rect around it (debug)
             g.drawRect( x, y, flight.getLabelWidth(), flight.getLabelHeight() );
             
-            Color color = Color.green;
+            Color color = colorToUse;
             this.labelFont.drawString( 1 + x, 1 + y, flight.getCallsign(), Color.black );
             this.labelFont.drawString( x, y, flight.getCallsign(), color );
         }
@@ -185,6 +194,10 @@ public class Radar extends Renderable {
     
     @Override
     public void mouseWheelMoved( int change ) {
+        this.zoom(change);
+    }
+
+    public void zoom(int change) {
         if ( ( change > 0 && this.zoom >= 362886.5932551272 ) || ( change < 0 && this.zoom <= 38.554328942953354 ) )
             return;
         double zoomBefore = this.zoom;
@@ -199,11 +212,35 @@ public class Radar extends Renderable {
         if ( key == Input.KEY_F12 ) {
             System.out.println( this.cameraX + "," + this.cameraY + "," + this.zoom );
         }
+        else if( key == Input.KEY_F4) {
+            // assume or release or transfer
+            if(this.currentFlight != null) {
+                this.currentFlight.setAssumed(!this.currentFlight.isAssumed());
+            }
+        }
     }
     
     @Override
     public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
-        this.cameraX += ( oldx - newx ) / this.zoom;
-        this.cameraY += ( oldy - newy ) / this.zoom;
+        // flightstrip
+        if(this.flightstrip.getX() <= oldx && this.flightstrip.getY() <= oldy &&
+                oldx <= this.flightstrip.getX() + this.flightstrip.getWidth() && oldy <= this.flightstrip.getY() + this.flightstrip.getHeight()) {
+
+            if( this.flightstrip.getX() + this.flightstrip.getWidth() + (newx-oldx) >= this.container.getWidth() ||
+                    this.flightstrip.getY() + this.flightstrip.getHeight() + (newy-oldy) >= this.container.getHeight()) {
+                System.out.println("CANCEL");
+                return;
+            }
+
+            this.flightstrip.setX(this.flightstrip.getX() + (newx-oldx));
+            this.flightstrip.setY(this.flightstrip.getY() + (newy-oldy));
+            System.out.println(this.flightstrip.getY());
+        }
+        else {
+            if(lockRadarScrolling) return;
+            // radar screen
+            this.cameraX += (oldx - newx) / this.zoom;
+            this.cameraY += (oldy - newy) / this.zoom;
+        }
     }
 }
