@@ -7,23 +7,30 @@
             <runway name="11" course="112"/>
         </runways>
         <stands>
-            <stand type="gate" name="F01" n="N048.07.05.546" e="E016.33.54.979" cat="M"/>
-            <stand type="gate" name="F04" n="N048.07.08.873" e="E016.33.59.301" cat="M"/>
-            <stand type="gate" name="F05" n="N048.07.04.599" e="E016.33.57.772" cat="M"/>
-            <stand type="gate" name="F08" n="N048.07.08.545" e="E016.34.01.413" cat="M"/>
-            <stand type="gate" name="F09" n="N048.07.03.981" e="E016.33.59.787" cat="M"/>
-            <stand type="gate" name="F12" n="N048.07.07.887" e="E016.34.03.452" cat="M"/>
-            <stand type="gate" name="F13" n="N048.07.03.351" e="E016.34.01.688" cat="M"/>
-            <stand type="gate" name="F16" n="N048.07.07.266" e="E016.34.05.369" cat="M"/>
-            <stand type="gate" name="F17" n="N048.07.02.692" e="E016.34.03.651" cat="M"/>
-            <stand type="gate" name="F22" n="N048.07.06.610"  e="E016.34.07.418" cat="M"/>
-            <stand type="gate" name="F23" n="N048.07.02.038" e="E016.34.05.637" cat="M"/>
-            <stand type="gate" name="F26" n="N048.07.02.692" e="E016.34.03.651" cat="M"/>
-            <stand type="gate" name="F27" n="N048.07.01.380"  e="E016.34.07.641" cat="M"/>
-            <stand type="gate" name="F32" n="N048.07.05.344" e="E016.34.11.371" cat="M"/>
-            <stand type="gate" name="F33" n="N048.07.00.791" e="E016.34.09.520" cat="M"/>
-
+            <stand type="gate" name="F01" n="N048.07.05.546" e="E016.33.54.979" cat="M" hdg="024" />
+            <stand type="gate" name="F04" n="N048.07.08.873" e="E016.33.59.301" cat="M" hdg="204"/>
+            <stand type="gate" name="F05" n="N048.07.04.599" e="E016.33.57.772" cat="M" hdg="024"/>
+            <stand type="gate" name="F08" n="N048.07.08.545" e="E016.34.01.413" cat="M" hdg="204"/>
+            <stand type="gate" name="F09" n="N048.07.03.981" e="E016.33.59.787" cat="M" hdg="024"/>
+            <stand type="gate" name="F12" n="N048.07.07.887" e="E016.34.03.452" cat="M" hdg="204"/>
+            <stand type="gate" name="F13" n="N048.07.03.351" e="E016.34.01.688" cat="M" hdg="024"/>
+            <stand type="gate" name="F16" n="N048.07.07.266" e="E016.34.05.369" cat="M" hdg="204"/>
+            <stand type="gate" name="F17" n="N048.07.02.692" e="E016.34.03.651" cat="M" hdg="024"/>
+            <stand type="gate" name="F22" n="N048.07.06.610" e="E016.34.07.418" cat="M" hdg="204"/>
+            <stand type="gate" name="F23" n="N048.07.02.038" e="E016.34.05.637" cat="M" hdg="024"/>
+            <stand type="gate" name="F26" n="N048.07.02.692" e="E016.34.03.651" cat="M" hdg="204"/>
+            <stand type="gate" name="F27" n="N048.07.01.380" e="E016.34.07.641" cat="M" hdg="024"/>
+            <stand type="gate" name="F32" n="N048.07.05.344" e="E016.34.11.371" cat="M" hdg="204"/>
+            <stand type="gate" name="F33" n="N048.07.00.791" e="E016.34.09.520" cat="M" hdg="024"/>
         </stands>
+        <taxiways>
+            <taxiway name="L" fx="16.542290217626828" fy="304.9575357316104" sx="16.57912014619141" sy="304.9751311405985" />
+            <taxiway name="TL36" fx="16.5633695427279" fy="304.96517321975534" sx="16.573627088173634" sy="304.9701898324385" />
+            <taxiway name="TL35" fx="16.5633695427279" fy="304.96517321975534" sx="16.562349906003668" sy="304.9671309222659" />
+            <taxiway name="EX7" fx="16.562349906003668" fy="304.9671309222659" sx="16.56161100250995" sy="304.96817819425166" />
+            <taxiway name="M" fx="16.535009566411183" fy="304.9552418331992" sx="16.577555310400893" sy="304.9759004817362" />
+
+        </taxiways>
     </airport>
     <airport icao="LOWL" name="Blue Danube Flughafen Linz" shortName="Linz" intlCamX="16.51870247660628" intlCamY="304.9419502752182" intlCamZoom="15624.722518287514">
         <runways>

@@ -10,14 +10,13 @@ grammar grammar;
 <airline> = ( austrian | lufthansa | german wings );
 <callsign> = ( <airline> <number> <number> <number>);
 <locPos> = ( left | center | right );
-<action> = ( cleared to land | hold position | report heading );
+<action> = ( cleared to land | hold position | report heading | ((read back correct) | correct));
 <argAction> = ( taxi to | line up and wait );
 <runway> = (runway <number>{1} <number>{1});
 
 public <simpleSyntax> = <callsign> <action>;
 public <actRwySyntax> = <callsign> <argAction>{1} ( <runway>{1} );
 public <clearance> = <callsign>{1} cleared to your destination out of <runway>{1} squawk <number>{1} <number>{1} <number>{1} <number>{1};
-public <clearanceRBCorrect> = <callsign> (readback correct | correct);
 
 // numbers
 <zero> = ( zero );

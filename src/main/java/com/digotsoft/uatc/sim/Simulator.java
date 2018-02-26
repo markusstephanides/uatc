@@ -74,7 +74,7 @@ public class Simulator {
             this.startMs = System.currentTimeMillis();
         }
         
-        if ( this.planesMayTx && ( this.tick - this.lastTxTick ) == this.lastTxWaitTicks && this.transmissionsQueue.size() > 0 ) {
+        if ( this.planesMayTx && ( this.tick - this.lastTxTick ) >= this.lastTxWaitTicks && this.transmissionsQueue.size() > 0 ) {
             System.out.println("ok ");
             WaitingTransmission waitingTransmission = this.transmissionsQueue.poll();
             this.transmit( waitingTransmission.getFlight(), waitingTransmission.getVoice(), waitingTransmission.getLine(), waitingTransmission.isWaitForResponse() );
@@ -126,6 +126,7 @@ public class Simulator {
     }
     
     public void processATCTX( String result ) {
+        
         String[] splitted = result.split( " " );
         
         // find the flight

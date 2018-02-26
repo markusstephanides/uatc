@@ -22,6 +22,7 @@ public class Airport {
     private String shortName;
     private List<Runway> runways;
     private List<Stand> stands;
+    private List<Taxiway> taxiways;
     private double x;
     private double y;
     private double zoom;

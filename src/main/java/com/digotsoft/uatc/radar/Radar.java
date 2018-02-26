@@ -3,6 +3,7 @@ package com.digotsoft.uatc.radar;
 import com.digotsoft.uatc.scenes.GameScene;
 import com.digotsoft.uatc.scenes.Renderable;
 import com.digotsoft.uatc.sim.Flight;
+import com.digotsoft.uatc.sim.Taxiway;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.opengl.GL11;
@@ -21,14 +22,16 @@ import java.util.List;
  * @created 25-Jan-18
  */
 public class Radar extends Renderable {
-
+    
     public static boolean lockRadarScrolling;
     
     private Sector activeSector;
     
     private double cameraX;
     private double cameraY;
-    @Getter @Setter private double zoom = 100;
+    @Getter
+    @Setter
+    private double zoom = 100;
     private double zoomSpeed = 1.1;
     private double moveSpeed = 0.5 / this.zoom;
     
@@ -69,12 +72,14 @@ public class Radar extends Renderable {
         this.background = new Color( 0, 0, 10 );
         this.activeSector = Sector.getSector( "LOVV_CTR" );
         this.radarFont = new TrueTypeFont( new java.awt.Font( "Tahome", java.awt.Font.PLAIN, 8 ), true );
-        this.labelFont = new TrueTypeFont( new java.awt.Font( "Arial", java.awt.Font.PLAIN, 12 ) , true );
+        this.labelFont = new TrueTypeFont( new java.awt.Font( "Arial", java.awt.Font.PLAIN, 12 ), true );
         this.cameraX = this.gameScene.getSimulator().getControllingAirport().getX();
         this.cameraY = this.gameScene.getSimulator().getControllingAirport().getY();
         this.zoom = this.gameScene.getSimulator().getControllingAirport().getZoom();
         this.flightstrip = new Flightstrip();
         GL11.glClearColor( 0, 0, 0.06f, 1 );
+//        this.cameraX = this.gameScene.getSimulator().getControllingAirport().getTaxiways().get( 0 ).getFx();
+//        this.cameraY = this.gameScene.getSimulator().getControllingAirport().getTaxiways().get( 0 ).getFy();
     }
     
     @Override
@@ -119,13 +124,13 @@ public class Radar extends Renderable {
         
         // draw flights
         for ( Flight flight : this.gameScene.getSimulator().getFlights() ) {
-            if(flight == null) {
-                System.out.println("FLIGHT NULL!!!!");
+            if ( flight == null ) {
+                System.out.println( "FLIGHT NULL!!!!" );
                 continue;
             }
-
+            
             Color colorToUse = flight.isAssumed() ? Color.yellow : Color.green;
-
+            
             float x = Math.round( ( ( flight.getX() - this.cameraX ) * this.zoom ) );
             float y = Math.round( ( ( flight.getY() - this.cameraY ) * this.zoom ) );
             g.setColor( colorToUse );
@@ -145,7 +150,15 @@ public class Radar extends Renderable {
             this.labelFont.drawString( x, y, flight.getCallsign(), color );
         }
         
+        for ( Taxiway taxiway : this.gameScene.getSimulator().getControllingAirport().getTaxiways() ) {
+            g.setColor( Color.yellow );
+            g.drawLine( ( float ) ( ( taxiway.getFx() - this.cameraX ) * this.zoom ), ( float ) ( ( taxiway.getFy() - this.cameraY ) * this.zoom ),
+                    ( float ) ( ( taxiway.getSx() - this.cameraX ) * this.zoom ), ( float ) ( ( taxiway.getSy() - this.cameraY ) * this.zoom ) );
+        }
+        
         this.flightstrip.render( container, g, this.currentFlight );
+        
+        
     }
     
     public void saveCurrPosZoom( int index ) {
@@ -194,10 +207,10 @@ public class Radar extends Renderable {
     
     @Override
     public void mouseWheelMoved( int change ) {
-        this.zoom(change);
+        this.zoom( change );
     }
-
-    public void zoom(int change) {
+    
+    public void zoom( int change ) {
         if ( ( change > 0 && this.zoom >= 362886.5932551272 ) || ( change < 0 && this.zoom <= 38.554328942953354 ) )
             return;
         double zoomBefore = this.zoom;
@@ -211,11 +224,15 @@ public class Radar extends Renderable {
     public void keyPressed( int key, char c ) {
         if ( key == Input.KEY_F12 ) {
             System.out.println( this.cameraX + "," + this.cameraY + "," + this.zoom );
-        }
-        else if( key == Input.KEY_F4) {
+        } else if ( key == Input.KEY_F11 ) {
+            double rx = this.container.getInput().getMouseX() / this.zoom + this.cameraX;
+            double ry = this.container.getInput().getMouseY() / this.zoom + this.cameraY;
+    
+            System.out.println( "fx=\"" + rx + "\" fy=\"" + ry +  "\"");
+        } else if ( key == Input.KEY_F4 ) {
             // assume or release or transfer
-            if(this.currentFlight != null) {
-                this.currentFlight.setAssumed(!this.currentFlight.isAssumed());
+            if ( this.currentFlight != null ) {
+                this.currentFlight.setAssumed( ! this.currentFlight.isAssumed() );
             }
         }
     }
@@ -223,24 +240,23 @@ public class Radar extends Renderable {
     @Override
     public void mouseDragged( int oldx, int oldy, int newx, int newy ) {
         // flightstrip
-        if(this.flightstrip.getX() <= oldx && this.flightstrip.getY() <= oldy &&
-                oldx <= this.flightstrip.getX() + this.flightstrip.getWidth() && oldy <= this.flightstrip.getY() + this.flightstrip.getHeight()) {
-
-            if( this.flightstrip.getX() + this.flightstrip.getWidth() + (newx-oldx) >= this.container.getWidth() ||
-                    this.flightstrip.getY() + this.flightstrip.getHeight() + (newy-oldy) >= this.container.getHeight()) {
-                System.out.println("CANCEL");
+        if ( this.flightstrip.getX() <= oldx && this.flightstrip.getY() <= oldy &&
+                oldx <= this.flightstrip.getX() + this.flightstrip.getWidth() && oldy <= this.flightstrip.getY() + this.flightstrip.getHeight() ) {
+            
+            if ( this.flightstrip.getX() + this.flightstrip.getWidth() + ( newx - oldx ) >= this.container.getWidth() ||
+                    this.flightstrip.getY() + this.flightstrip.getHeight() + ( newy - oldy ) >= this.container.getHeight() ) {
+                System.out.println( "CANCEL" );
                 return;
             }
-
-            this.flightstrip.setX(this.flightstrip.getX() + (newx-oldx));
-            this.flightstrip.setY(this.flightstrip.getY() + (newy-oldy));
-            System.out.println(this.flightstrip.getY());
-        }
-        else {
-            if(lockRadarScrolling) return;
+            
+            this.flightstrip.setX( this.flightstrip.getX() + ( newx - oldx ) );
+            this.flightstrip.setY( this.flightstrip.getY() + ( newy - oldy ) );
+            System.out.println( this.flightstrip.getY() );
+        } else {
+            if ( lockRadarScrolling ) return;
             // radar screen
-            this.cameraX += (oldx - newx) / this.zoom;
-            this.cameraY += (oldy - newy) / this.zoom;
+            this.cameraX += ( oldx - newx ) / this.zoom;
+            this.cameraY += ( oldy - newy ) / this.zoom;
         }
     }
 }

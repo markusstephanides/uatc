@@ -29,7 +29,7 @@ public class StaticData {
         loadAirports();
     }
     
-    public static String generateRandomCallsign(Airline airline) {
+    public static String generateRandomCallsign( Airline airline ) {
         Random random = new Random();
         return airline.getCallsignShort() + ( random.nextInt( 899 ) + 100 );
     }
@@ -69,9 +69,9 @@ public class StaticData {
         return null;
     }
     
-    public static String getCallsignByShortCS(String cs) {
+    public static String getCallsignByShortCS( String cs ) {
         for ( Airline airline : airlines ) {
-            if(cs.contains( airline.getCallsignShort() )) {
+            if ( cs.contains( airline.getCallsignShort() ) ) {
                 return airline.getCallsign();
             }
         }
@@ -148,10 +148,9 @@ public class StaticData {
                     double camX = Double.parseDouble( airportElement.getAttribute( "intlCamX" ) );
                     double camY = Double.parseDouble( airportElement.getAttribute( "intlCamY" ) );
                     double zoom = Double.parseDouble( airportElement.getAttribute( "intlCamZoom" ) );
-    
-    
-    
-                    Airport airport = new Airport( airportICAO, airportName, airportShortName, new ArrayList<>(), new ArrayList<>(), camX, camY, zoom );
+                    
+                    
+                    Airport airport = new Airport( airportICAO, airportName, airportShortName, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), camX, camY, zoom );
                     
                     NodeList runways = doc.getElementsByTagName( "runway" );
                     for ( int r = 0; r < runways.getLength(); r++ ) {
@@ -182,6 +181,25 @@ public class StaticData {
                             double y = 360 - Converters.parseCoordinate( standN );
                             
                             airport.getStands().add( new Stand( standName, standType, x, y, standCat ) );
+                        }
+                    }
+                    
+                    NodeList taxiways = doc.getElementsByTagName( "taxiway" );
+                    for ( int s = 0; s < taxiways.getLength(); s++ ) {
+                        Node taxiwayNode = taxiways.item( s );
+                        
+                        if ( taxiwayNode.getNodeType() == Node.ELEMENT_NODE ) {
+                            Element taxiwayElement = ( Element ) taxiwayNode;
+                            String taxiwayName = taxiwayElement.getAttribute( "name" );
+                            double taxiwayFX = Double.parseDouble( taxiwayElement.getAttribute( "fx" ) );
+                            double taxiwayFY = Double.parseDouble( taxiwayElement.getAttribute( "fy" ) );
+                            double taxiwaySX = Double.parseDouble( taxiwayElement.getAttribute( "sx" ) );
+                            double taxiwaySY =  Double.parseDouble( taxiwayElement.getAttribute( "sy" ) );
+
+//                            double x = Converters.parseCoordinate( standE );
+//                            double y = 360 - Converters.parseCoordinate( standN );
+//
+                            airport.getTaxiways().add( new Taxiway( taxiwayName, taxiwayFX, taxiwayFY, taxiwaySX, taxiwaySY ) );
                         }
                     }
                     
